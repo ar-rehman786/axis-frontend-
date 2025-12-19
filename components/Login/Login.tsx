@@ -3,27 +3,17 @@
 import { useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/app/lib/hooks/reducerHooks";
-import { loginUser, clearError } from "@/utils/store/Slices/authSlice";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useAppDispatch();
   const router = useRouter();
-  const { loading, error } = useAppSelector((state) => state.auth);
 
   const handleLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    dispatch(clearError());
-
-    // Fire the login request in background (optional) but do NOT wait for it
-    // so that submission always proceeds regardless of credentials.
-    dispatch(loginUser({ email, password }));
-
-    // Immediately redirect regardless of API result or validation
-    window.location.href = "/";
+    // Always redirect to dashboard after form submission
+    router.push('/dashboard');
   };
 
   return (
@@ -42,11 +32,7 @@ export default function Login() {
           Login to Axis Trade Market
         </h1>
 
-        {error && (
-          <div className="mb-4 p-3 rounded-md text-red-500 bg-red-500/10 border border-red-500/20">
-            {error}
-          </div>
-        )}
+
 
         {/* Demo Credentials Banner */}
         {/* <div className="mb-6 p-3 rounded-md" style={{ backgroundColor: "#2A2A2A" }}>
@@ -72,7 +58,6 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              disabled={loading}
               style={{
                 width: "100%",
                 borderRadius: "0.5rem",
@@ -96,7 +81,6 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              disabled={loading}
               style={{
                 width: "100%",
                 borderRadius: "0.5rem",
@@ -111,29 +95,18 @@ export default function Login() {
           <div className="text-center">
             <button
               type="submit"
-              disabled={loading}
               style={{
                 width: "100%",
                 padding: "0.5rem 1rem",
                 borderRadius: "0.5rem",
-                backgroundColor: loading ? "#4B5563" : "#00D1D1",
+                backgroundColor: "#00D1D1",
                 color: "#FFFFFF",
                 fontWeight: 500,
-                cursor: loading ? "not-allowed" : "pointer",
+                cursor: "pointer",
                 transition: "background-color 0.2s",
               }}
-              onMouseEnter={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.backgroundColor = "#00B8B8";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.backgroundColor = "#00D1D1";
-                }
-              }}
             >
-              {loading ? "Logging in..." : "Login"}
+              Login
             </button>
           </div>
         </form>
