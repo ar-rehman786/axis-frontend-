@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { Crown, Lock, Mail, Eye, EyeOff, Shield, Zap, Globe, ArrowRight, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
 import { log } from 'node:console';
 
 export default function Admin() {
@@ -17,73 +16,13 @@ export default function Admin() {
     const data = { email, password }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-        setIsLoading(true);
-        setTimeout(() => {
-            const setAuth = (role: string, token: string, redirectTo: string) => {
-                localStorage.setItem('adminToken', token);
-                localStorage.setItem('adminUser', JSON.stringify({ email, role }));
 
-                // Used by existing /super-admin route guard
-                if (role === 'MASTER_ADMIN') {
-                    localStorage.setItem('auth', 'super-admin');
-                } else {
-                    localStorage.removeItem('auth');
-                }
-
-                // Used by Next.js middleware (server side)
-                document.cookie = `adminToken=${token}; path=/; max-age=86400; SameSite=Lax`;
-                document.cookie = `user_role=${role}; path=/; max-age=86400; SameSite=Lax`;
-
-                router.push(redirectTo);
-            };
-
-            // Super Admin (existing dummy)
-            if (email === 'admin@axistrademarket.ai' && password === 'Temp123!') {
-                setAuth('MASTER_ADMIN', 'super-admin-token', '/super-admin');
-            }
-            // Admin (requested dummy)
-            else if (email === 'admin@gmail.com' && password === '12345678') {
-                setAuth('ADMIN', 'admin-token', '/dashboard');
-            }
-            else {
-                setError('Invalid credentials. Access denied.');
-            }
-
-            setIsLoading(false);
-        }, 1500);
-
-    };
-
-    const login = async () => {
-        try {
-            const res = await axios.post(
-                "http://localhost:8080/auth/login",
-                data,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            const { access_token, user } = res.data;
-
-            console.log(access_token);
-            
-            localStorage.setItem("accessToken", access_token);
-
-            
-            localStorage.setItem("user", JSON.stringify(user));
-
-            console.log("Token saved:", access_token);
-            return res.data;
-        } catch (error: any) {
-            console.error("Login failed:", error.response?.data || error.message);
+        if (email === 'admin@axistrademarket.ai' && password === 'Temp123!') {
+            router.push('/super-admin');
+        } else {
+            setError('Invalid credentials. Access denied.');
         }
     };
-
-    login();
 
 
     return (

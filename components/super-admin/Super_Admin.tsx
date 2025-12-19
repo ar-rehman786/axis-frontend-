@@ -19,8 +19,6 @@ import {
   BarChart3, AlertTriangle, CheckCircle, XCircle, Copy, RefreshCw,
   Zap, Server, Globe, Crown, Search, Filter
 } from 'lucide-react';
-import { apiClient } from "@/app/lib/api";
-import axios from "axios";
 
 export default function Super_Admin() {
   const router = useRouter();
@@ -227,31 +225,22 @@ export default function Super_Admin() {
       return;
     }
 
-    try {
-      const superAdminToken = localStorage.getItem('accessToken')
+    // Mock response
+    const mockResponse = {
+      email: `demo-${Math.floor(Math.random() * 1000)}@axistrademarket.ai`,
+      password: 'demo-password-' + Math.floor(Math.random() * 1000),
+      role: demoRole,
+      expires: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    };
 
-      const res = await axios.post(
-        'http://localhost:8080/demo/create',
-        { email: 'axis@gmail.com', role: demoRole },
-        {
-          headers: {
-            Authorization: `Bearer ${superAdminToken}`,
-          },
-        }
-      );
-
-      console.log('Demo account created:', res.data);
-      setResponseEmail(res.data.email)
-      setResponsePassword(res.data.password)
-      setResponseRole(res.data.role)
-      
-    } catch (err: any) {
-      console.error(
-        'Error creating demo account:',
-        err.response?.data || err
-      );
-      throw err;
-    }
+    console.log('Demo account created (mock):', mockResponse);
+    setResponseEmail(mockResponse.email)
+    setResponsePassword(mockResponse.password)
+    setResponseRole(mockResponse.role)
+    setGeneratedDemo({
+      ...mockResponse,
+      status: 'active'
+    });
   };
 
 
