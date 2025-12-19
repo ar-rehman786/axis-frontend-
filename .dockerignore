@@ -1,0 +1,25 @@
+# dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# local env files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Next.js build output
+.next
+out
+
+# OS / IDE
+.DS_Store
+*.swp
+*.swo
+*.log
+
+# vscode
+.vscode
+.idea
