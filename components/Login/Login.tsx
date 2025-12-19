@@ -13,17 +13,17 @@ export default function Login() {
   const router = useRouter();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     dispatch(clearError());
-    
-    const result = await dispatch(loginUser({ email, password }));
-    
-    if (loginUser.fulfilled.match(result)) {
-      // Redirect will be handled by middleware via cookies
-      window.location.href = "/";
-    }
+
+    // Fire the login request in background (optional) but do NOT wait for it
+    // so that submission always proceeds regardless of credentials.
+    dispatch(loginUser({ email, password }));
+
+    // Immediately redirect regardless of API result or validation
+    window.location.href = "/";
   };
 
   return (
@@ -59,7 +59,7 @@ export default function Login() {
           </p>
         </div> */}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form noValidate onSubmit={handleLogin} className="space-y-4">
           <div>
             <label
               className="block mb-1 font-medium"
@@ -69,7 +69,6 @@ export default function Login() {
             </label>
             <input
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
@@ -94,7 +93,6 @@ export default function Login() {
             </label>
             <input
               type="password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
